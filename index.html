@@ -14,6 +14,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Swiper.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
     <style>
         /* Custom styles inspired by Dentsu's clean aesthetic */
         html {
@@ -113,60 +116,129 @@
             width: 100%;
         }
 
-        /* Carousel Fade Animation */
-        #carousel-slides > .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.7s ease-in-out;
-            visibility: hidden;
-        }
-
-        #carousel-slides > .slide.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
         /* Offer Box Animation */
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); }
-            50% { box-shadow: 0 0 35px rgba(139, 92, 246, 0.7); }
+        @keyframes animated-gradient {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .offer-box {
-            animation: pulse-glow 3s infinite ease-in-out;
             position: relative;
             overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease-out;
+            padding: 2px; /* Adjust border thickness */
+            border-radius: 0.75rem; /* Match inner content radius */
         }
-
-        .offer-box::after {
+        
+        .offer-box::before {
             content: '';
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(
-                to right, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.2) 50%, 
-                transparent 100%
+            background: conic-gradient(
+                #a855f7, 
+                #ec4899, 
+                #6366f1, 
+                #a855f7
             );
-            transform: rotate(-45deg);
-            animation: shimmer 4s linear infinite;
+            animation: animated-gradient 4s linear infinite;
+            z-index: 1;
         }
 
-        @keyframes shimmer {
-            from {
-                transform: translateX(-100%) rotate(-45deg);
-            }
-            to {
-                transform: translateX(100%) rotate(-45deg);
-            }
+        .offer-box > * {
+            position: relative;
+            z-index: 2;
         }
+
+        /* This creates the inner box that sits on top of the gradient */
+        .offer-box-content {
+            background-color: #7C3AED;
+            border-radius: calc(0.75rem - 2px); /* Slightly smaller than parent */
+            padding: 1.75rem; /* This was p-8, now controlled here */
+        }
+
+        .offer-box:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 60px rgba(124, 58, 237, 0.6);
+        }
+
+        /* Swiper Image Slider Styles */
+        .concept-slider {
+            width: 100%;
+            padding-top: 20px;
+            padding-bottom: 50px;
+        }
+        .concept-slider .swiper-slide {
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .concept-slider .swiper-slide-active {
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        .concept-slider .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: #111827 !important;
+        }
+        .swiper-button-next, .swiper-button-prev {
+            color: white;
+            background-color: rgba(17, 24, 39, 0.5);
+            width: 44px;
+            height: 44px;
+            border-radius: 9999px;
+            transition: background-color 0.3s ease;
+        }
+        .swiper-button-next:hover, .swiper-button-prev:hover {
+             background-color: rgba(17, 24, 39, 0.8);
+        }
+        .swiper-button-next::after, .swiper-button-prev::after {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* Swiper Video Slider Styles */
+        .video-slider {
+            width: 100%;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .video-slider .swiper-slide {
+            background: transparent;
+            transition: transform 0.5s ease;
+        }
+        .video-slider .swiper-slide-prev,
+        .video-slider .swiper-slide-next {
+            transform: scale(0.9);
+            opacity: 0.7;
+        }
+        .video-pagination.swiper-pagination-bullets .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.7);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        .video-pagination.swiper-pagination-bullets .swiper-pagination-bullet-active {
+            opacity: 1;
+            background: #a855f7;
+            transform: scale(1.2);
+        }
+        
 
     </style>
 </head>
@@ -178,19 +250,24 @@
         <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-20 border-b border-gray-200">
+                
                     <a href="#" class="flex items-center gap-3 group">
                         <img src="https://i.postimg.cc/rs7LcJyN/Monogram-Enhancd.png" alt="Anreid Digital Logo" class="h-10 w-10">
                         <span class="text-2xl font-bold text-gray-900">Anreid Digital</span>
                     </a>
-                    <nav class="hidden md:flex items-center space-x-8">
-                        <a href="#services" class="nav-link">Services</a>
-                        <a href="#works" class="nav-link">Work</a>
+                
+                    <nav class="hidden md:flex items-center space-x-7">
+                        <a href="#creative-studio" class="nav-link">Creative Studio</a>
+                        <a href="#works" class="nav-link">Creative Lab</a>
+                        <a href="#services" class="nav-link">Service Suite</a>
                         <a href="#ai-avatar-section" class="nav-link">AI Solutions</a>
                         <a href="#contact" class="nav-link">Contact</a>
                     </nav>
+                
                     <a href="#contact" class="hidden md:block primary-button font-medium py-2 px-6 rounded-full">
                         Get In Touch
                     </a>
+                
                     <div class="md:hidden">
                         <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -203,8 +280,9 @@
         <!-- Mobile Menu (Hidden by default) -->
         <div id="mobile-menu" class="hidden md:hidden fixed top-20 left-0 right-0 bottom-0 z-40 bg-white">
             <div class="flex flex-col items-center justify-center h-full space-y-8">
-                <a href="#services" class="text-2xl text-gray-800 hover:text-black transition-colors duration-300">Services</a>
-                <a href="#works" class="text-2xl text-gray-800 hover:text-black transition-colors duration-300">Work</a>
+                <a href="#creative-studio" class="text-2xl text-gray-800 hover:text-black transition-colors duration-300">Creative Studio</a>
+                <a href="#works" class="text-2xl text-gray-800 hover:text-black transition-colors duration-300">Creative Lab</a>
+                <a href="#services" class="text-2xl text-gray-800 hover:text-black transition-colors duration-300">Service Suite</a>
                 <a href="#ai-avatar-section" class="text-2xl text-gray-800 hover:text-black transition-colors duration-300">AI Solutions</a>
                 <a href="#contact" class="text-2xl text-gray-800 hover:text-black transition-colors duration-300">Contact</a>
                 <a href="#contact" class="mt-4 primary-button font-semibold py-3 px-8 rounded-full text-lg">Get In Touch</a>
@@ -213,31 +291,150 @@
 
         <!-- Hero Section -->
         <main id="hero-section" class="flex flex-col items-center justify-center text-center min-h-screen pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
-            <h1 id="typing-heading" class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-gray-900 tracking-tighter leading-tight min-h-[1.2em] sm:min-h-[1.2em] md:min-h-[1.2em] lg:min-h-[1.2em]"></h1>
-            <p class="mt-6 max-w-3xl text-lg text-gray-600 fade-in-up fade-in-up-delay-1">We help startups and businesses achieve explosive growth through innovation, artificial intelligence, bold strategies, and the latest technology.</p>
-            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 fade-in-up fade-in-up-delay-2">
-                <a href="#contact" class="primary-button font-bold py-4 px-8 rounded-full text-lg w-full sm:w-auto">Get Started</a>
-                <a href="#works" class="secondary-button font-bold py-4 px-8 rounded-full text-lg w-full sm:w-auto">Our Work</a>
+            <h1 id="typing-heading" class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-gray-900 tracking-tighter leading-tight min-h-[1.2em] sm:min-h-[1.2em] md:min-h-[1.2em] lg:min-h-[1.2em] whitespace-nowrap"></h1>
+            <p class="mt-6 max-w-3xl text-lg text-gray-800 fade-in-up fade-in-up-delay-1 font-semibold">Helping UK brands turn content into customers through AI-powered strategy, social media, and performance marketing.</p>
+            <p class="mt-4 max-w-3xl text-base text-gray-600 fade-in-up fade-in-up-delay-2">We combine creative storytelling with data-driven performance to help you grow faster — smarter.</p>
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 fade-in-up fade-in-up-delay-3">
+                <a href="#contact" class="primary-button font-bold py-4 px-8 rounded-full text-lg w-full sm:w-auto">Book a strategy call</a>
+                <a href="#creative-studio" class="secondary-button font-bold py-4 px-8 rounded-full text-lg w-full sm:w-auto">Our Work</a>
                 <a href="#services" class="offer-button font-bold py-4 px-8 rounded-full text-lg w-full sm:w-auto">Limited Offers</a>
             </div>
         </main>
 
+        <!-- Creative Studio Section -->
+        <section id="creative-studio" class="py-20 sm:py-32 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-4xl mx-auto">
+                    <h2 class="text-4xl sm:text-5xl font-bold text-gray-900">Creative Studio</h2>
+                    <p class="mt-4 text-lg text-gray-600">A showcase of our creative projects, brand identities, and campaigns.</p>
+                </div>
+                <!-- Swiper Image Slider -->
+                <div class="swiper-container concept-slider mt-12">
+                    <div class="swiper-wrapper">
+                        <!-- Slide 1 -->
+                        <div class="swiper-slide relative">
+                            <img src="https://i.postimg.cc/xd2dD0q4/Untitledu.png" alt="Content Creation Project" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6 text-white">
+                                <h3 class="text-2xl font-bold">Content Creation</h3>
+                                <p class="mt-1 text-gray-200">Engaging and high-quality content for digital platforms.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 2 -->
+                         <div class="swiper-slide relative">
+                            <img src="https://i.postimg.cc/7hdvX8np/Untitled-8.png" alt="E-commerce Platform Project" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6 text-white">
+                                <h3 class="text-2xl font-bold">E-commerce Platform</h3>
+                                <p class="mt-1 text-gray-200">Full-stack web development and branding.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 3 -->
+                         <div class="swiper-slide relative">
+                            <img src="https://i.postimg.cc/5NHPdd76/Untitled-17.png" alt="A marketing campaign project" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6 text-white">
+                                <h3 class="text-2xl font-bold">Marketing Campaigns</h3>
+                                <p class="mt-1 text-gray-200">AI powered marketing strategies and campaigns.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 4 -->
+                         <div class="swiper-slide relative">
+                            <img src="https://i.postimg.cc/BZdyWm0C/Untitled-18.png" alt="Viral Video Campaign Project" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6 text-white">
+                                <h3 class="text-2xl font-bold">Viral Video Campaign</h3>
+                                <p class="mt-1 text-gray-200">Video production and performance marketing.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 5 -->
+                         <div class="swiper-slide relative">
+                            <img src="https://i.postimg.cc/ZnZ3VS30/Untitled-11.png" alt="Creative Branding Project" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6 text-white">
+                                <h3 class="text-2xl font-bold">Creative Branding</h3>
+                                <p class="mt-1 text-gray-200">Building from scratch to high revenue generation.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
+                    <!-- Add Navigation -->
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Works Section -->
+        <section id="works" class="py-20 sm:py-32 bg-white flex flex-col justify-center">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-4xl mx-auto">
+                    <h2 class="text-4xl sm:text-5xl font-bold text-gray-900">Creative Lab in Motion</h2>
+                     <p class="mt-4 text-lg text-gray-600">Watch our AI-powered creative strategies come to life.</p>
+                     <p class="mt-4 text-md text-gray-500 max-w-2xl mx-auto">This concept ad for a burger shop was created entirely with AI in half a day. Advertising has taken a new shape with AI—you no longer need a major budget, big cameras, perfect lighting, or props to make an ad.</p>
+                </div>
+
+                <!-- Swiper Video Slider -->
+                <div class="swiper-container video-slider mt-12 max-w-4xl mx-auto">
+                    <div class="swiper-wrapper">
+                        <!-- Videos removed as requested -->
+                        <div class="swiper-slide">
+                            <div style="padding:57.17% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1126621943?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="New Video"></iframe></div>
+                        </div>
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination video-pagination"></div>
+                    <!-- Add Navigation -->
+                    
+                </div>
+                <script src="https://player.vimeo.com/api/player.js"></script>
+            </div>
+        </section>
+
         <!-- Services Section -->
-        <section id="services" class="py-20 sm:py-32 bg-white">
+        <section id="services" class="py-20 sm:py-32 bg-gray-50">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-left max-w-4xl">
                     <h2 class="text-4xl sm:text-5xl font-bold text-gray-900">Service Suite</h2>
-                    <p class="mt-4 text-lg text-gray-600">We provide best-in-class services for your digital growth, designed to deliver tangible impact.</p>
+                    <p class="mt-4 text-xl font-semibold text-gray-800">Your Growth Engine, All in One Place.</p>
+                    <p class="mt-2 text-lg text-gray-600">From scroll-stopping videos to ROI-driven ads — everything you need to scale your brand in the UK market.</p>
                 </div>
                 <div class="mt-16 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     <!-- Offer Box -->
-                    <div class="offer-box col-span-1 md:col-span-2 lg:col-span-3 rounded-lg p-8 bg-violet-600 text-white text-center">
-                        <h3 class="text-3xl font-bold">Content Creation</h3>
-                        <p class="mt-2 text-xl text-violet-200">10 scroll-stopping videos</p>
-                        <div class="mt-4 flex justify-center items-baseline gap-3">
-                            <span class="text-5xl font-bold">£499</span>
-                            <span class="text-2xl font-medium text-violet-200">only</span>
-                            <span class="text-3xl line-through text-violet-300">£899</span>
+                    <div class="offer-box col-span-1 md:col-span-2 lg:col-span-3 text-white text-center">
+                        <div class="offer-box-content">
+                            <h3 class="text-3xl font-bold">Content Creation</h3>
+                            <div class="mt-4 flex justify-center items-baseline gap-3">
+                                <span class="text-5xl font-bold">£799</span>
+                                <span class="text-2xl font-medium text-violet-200">only</span>
+                                <span class="text-3xl line-through text-violet-300">£1299</span>
+                            </div>
+                            <!-- Countdown Timer -->
+                            <div id="countdown-timer" class="mt-6">
+                                <p class="text-violet-200 text-sm font-medium mb-2 uppercase tracking-wider">Offer ends in:</p>
+                                <div class="flex justify-center items-center space-x-2 md:space-x-4">
+                                    <div>
+                                        <span id="days" class="text-3xl md:text-4xl font-bold">00</span>
+                                        <span class="block text-xs text-violet-300">Days</span>
+                                    </div>
+                                    <span class="text-3xl md:text-4xl font-bold">:</span>
+                                    <div>
+                                        <span id="hours" class="text-3xl md:text-4xl font-bold">00</span>
+                                        <span class="block text-xs text-violet-300">Hours</span>
+                                    </div>
+                                    <span class="text-3xl md:text-4xl font-bold">:</span>
+                                    <div>
+                                        <span id="minutes" class="text-3xl md:text-4xl font-bold">00</span>
+                                        <span class="block text-xs text-violet-300">Minutes</span>
+                                    </div>
+                                     <span class="text-3xl md:text-4xl font-bold">:</span>
+                                    <div>
+                                        <span id="seconds" class="text-3xl md:text-4xl font-bold">00</span>
+                                        <span class="block text-xs text-violet-300">Seconds</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -251,50 +448,16 @@
             </div>
         </section>
 
-        <!-- Works Section -->
-        <section id="works" class="py-20 sm:py-32 bg-gray-50">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-left max-w-4xl">
-                    <h2 class="text-4xl sm:text-5xl font-bold text-gray-900">Creative Lab</h2>
-                    <p class="mt-4 text-lg text-gray-600">A glimpse into the brands we've helped scale.</p>
-                </div>
-                <div id="carousel-container" class="mt-16 relative w-full group">
-                    <div class="overflow-hidden rounded-lg border border-gray-200 relative aspect-video">
-                        <div id="carousel-slides">
-                            <div class="slide relative"><img src="https://i.postimg.cc/xd2dD0q4/Untitledu.png" alt="Content Creation Project" class="w-full h-full object-cover"><div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent"><h3 class="text-2xl font-bold text-white">Content Creation</h3><p class="text-gray-200 mt-1">Engaging and high-quality content for digital platforms.</p></div></div>
-                            <div class="slide relative"><img src="https://i.postimg.cc/7hdvX8np/Untitled-8.png" alt="E-commerce Platform Project" class="w-full h-full object-cover"><div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent"><h3 class="text-2xl font-bold text-white">E-commerce Platform</h3><p class="text-gray-200 mt-1">Full-stack web development and branding.</p></div></div>
-                            <div class="slide relative"><img src="https://i.postimg.cc/5NHPdd76/Untitled-17.png" alt="A marketing campaign project" class="w-full h-full object-cover"><div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent"><h3 class="text-2xl font-bold text-white">Marketing Campaigns</h3><p class="text-gray-200 mt-1">AI powered marketing strategies and campaigns</p></div></div>
-                            <div class="slide relative"><img src="https://i.postimg.cc/BZdyWm0C/Untitled-18.png" alt="Viral Video Campaign Project" class="w-full h-full object-cover"><div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent"><h3 class="text-2xl font-bold text-white">Viral Video Campaign</h3><p class="text-gray-200 mt-1">Video production and performance marketing.</p></div></div>
-                            <div class="slide relative"><img src="https://i.postimg.cc/ZnZ3VS30/Untitled-11.png" alt="Creative Branding Project" class="w-full h-full object-cover"><div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent"><h3 class="text-2xl font-bold text-white">Creative Branding</h3><p class="text-gray-200 mt-1">Building from scratch to high revenue generation</p></div></div>
-                        </div>
-                    </div>
-                    <button id="prev-btn" class="absolute top-1/2 left-4 -translate-y-1/2 bg-white/80 text-gray-900 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white z-10"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg></button>
-                    <button id="next-btn" class="absolute top-1/2 right-4 -translate-y-1/2 bg-white/80 text-gray-900 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white z-10"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg></button>
-                    <div id="carousel-dots" class="absolute -bottom-10 left-1/2 -translate-x-1/2 flex space-x-2"></div>
-                </div>
-
-                <!-- Video Section -->
-                <div class="mt-20 text-center">
-                    <h3 class="text-2xl font-semibold text-gray-800">AI Generated Creative Ads</h3>
-                    <p class="text-lg text-gray-600 mt-1">in collaboration with VOC Productions</p>
-                    <div class="mt-8 max-w-4xl mx-auto">
-                        <div style="padding:99.08% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1122622894?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="AI Generated Creatives"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
         <!-- AI Avatar Section -->
-        <section id="ai-avatar-section" class="py-20 sm:py-32 bg-white">
+        <section id="ai-avatar-section" class="py-20 sm:py-32 bg-gray-50">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div class="text-left">
                         <h2 class="text-4xl sm:text-5xl font-bold text-gray-900">
-                           AI-Powered Brand Solutions
+                            AI-Powered Brand Solutions
                         </h2>
                         <p class="mt-6 text-xl text-gray-600">
-                           Your brand deserves more than a logo. Give it a voice, a face, and a dynamic presence with our AI-driven creative solutions.
+                            Your brand deserves more than a logo. Give it a voice, a face, and a dynamic presence with our AI-driven creative solutions.
                         </p>
                         <div class="mt-8">
                             <a href="#contact" class="primary-button font-bold py-4 px-8 rounded-full text-lg inline-block">
@@ -312,22 +475,60 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <footer id="contact" class="w-full py-20 sm:py-32 bg-gray-900 text-white">
+        <!-- Contact Form Section -->
+        <section id="contact" class="py-20 sm:py-32 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-4xl mx-auto">
+                    <h2 class="text-4xl sm:text-5xl font-bold text-gray-900">Get In Touch</h2>
+                    <p class="mt-4 text-lg text-gray-600">Have a project in mind? Fill out the form below and we'll get back to you shortly.</p>
+                </div>
+                <div class="mt-12 max-w-2xl mx-auto">
+                    <!-- 
+                        To make this form work, you need to:
+                        1. Sign up for a free account at https://formspree.io/
+                        2. Create a new form and set the recipient email to anreid.co@gmail.com.
+                        3. Replace the placeholder action URL below with your unique Formspree endpoint URL.
+                    -->
+                    <form action="https://formspree.io/f/xnngodpg" method="POST" class="space-y-6">
+                        <div>
+                            <label for="name" class="sr-only">Full Name</label>
+                            <input type="text" name="name" id="name" required class="block w-full rounded-md border-gray-300 py-3 px-4 shadow-sm focus:border-violet-500 focus:ring-violet-500" placeholder="Full Name">
+                        </div>
+                        <div>
+                            <label for="email" class="sr-only">Email</label>
+                            <input type="email" name="email" id="email" required class="block w-full rounded-md border-gray-300 py-3 px-4 shadow-sm focus:border-violet-500 focus:ring-violet-500" placeholder="Email Address">
+                        </div>
+                        <div>
+                            <label for="message" class="sr-only">Message</label>
+                            <textarea id="message" name="message" rows="4" required class="block w-full rounded-md border-gray-300 py-3 px-4 shadow-sm focus:border-violet-500 focus:ring-violet-500" placeholder="Your Message"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full primary-button font-bold py-4 px-8 rounded-full text-lg">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Section -->
+        <footer id="contact-info" class="w-full py-20 sm:py-32 bg-gray-900 text-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                 <h2 class="text-4xl sm:text-5xl font-bold">Let's Create Together</h2>
-                 <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">We'd love to hear from you. Book a free strategy call to get started.</p>
-                 <div class="mt-10 flex flex-col md:flex-row justify-center items-center gap-8 md:gap-12">
+                <h2 class="text-4xl sm:text-5xl font-bold">Let's Create Together</h2>
+                <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">We'd love to hear from you. Book a free strategy call to get started.</p>
+                <div class="mt-10 flex flex-col md:flex-row justify-center items-center gap-8 md:gap-12">
                      <a href="mailto:anreid.co@gmail.com" class="flex items-center gap-3 text-lg text-gray-300 hover:text-white transition-colors duration-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg><span>anreid.co@gmail.com</span></a>
-                      <a href="tel:07741519675" class="flex items-center gap-3 text-lg text-gray-300 hover:text-white transition-colors duration-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" /></svg><span>07741 519675</span></a>
-                      <a href="tel:07760689011" class="flex items-center gap-3 text-lg text-gray-300 hover:text-white transition-colors duration-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" /></svg><span>07760 689011</span></a>
-                 </div>
-                 <div class="mt-16 border-t border-gray-700 pt-8 text-gray-500">
-                     <p>&copy; 2024 Anreid Digital. All Rights Reserved.</p>
-                 </div>
+                     <a href="tel:07741519675" class="flex items-center gap-3 text-lg text-gray-300 hover:text-white transition-colors duration-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" /></svg><span>07741 519675</span></a>
+                     <a href="tel:07760689011" class="flex items-center gap-3 text-lg text-gray-300 hover:text-white transition-colors duration-300"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" /></svg><span>07760 689011</span></a>
+                </div>
+                <div class="mt-16 border-t border-gray-700 pt-8 text-gray-500">
+                     <p>&copy; 2025 Anreid Digital. All Rights Reserved.</p>
+                </div>
             </div>
         </footer>
     </div>
+    
+    <!-- Swiper.js JS -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <script>
         // JavaScript for Mobile Menu Toggle
@@ -391,72 +592,98 @@
                 type();
             }
 
-            // --- Works Carousel Logic ---
-            const slidesContainer = document.getElementById('carousel-slides');
-            if (slidesContainer) {
-                const prevBtn = document.getElementById('prev-btn');
-                const nextBtn = document.getElementById('next-btn');
-                const dotsContainer = document.getElementById('carousel-dots');
-                let currentIndex = 0;
-                const slides = Array.from(slidesContainer.children);
-                const totalSlides = slides.length;
-                let slideInterval;
-                
-                // Create dots
-                for (let i = 0; i < totalSlides; i++) {
-                    const dot = document.createElement('button');
-                    dot.classList.add('w-2.5', 'h-2.5', 'rounded-full', 'bg-gray-300', 'transition-colors', 'duration-300');
-                    dot.addEventListener('click', () => {
-                        goToSlide(i);
-                        resetInterval();
-                    });
-                    dotsContainer.appendChild(dot);
-                }
-                const dots = Array.from(dotsContainer.children);
+            // --- Countdown Timer Logic ---
+            const countdownContainer = document.getElementById('countdown-timer');
+            if (countdownContainer) {
+                // Set the date we're counting down to (3 days from now)
+                const countDownDate = new Date();
+                countDownDate.setDate(countDownDate.getDate() + 3);
+                countDownDate.setHours(23, 59, 59); // End of the 3rd day
 
-                function updateDots(index) {
-                    dots.forEach((dot, i) => {
-                        dot.classList.toggle('bg-gray-800', i === index);
-                        dot.classList.toggle('bg-gray-300', i !== index);
-                    });
-                }
+                const daysEl = document.getElementById('days');
+                const hoursEl = document.getElementById('hours');
+                const minutesEl = document.getElementById('minutes');
+                const secondsEl = document.getElementById('seconds');
 
-                function goToSlide(index) {
-                    slides[currentIndex].classList.remove('active');
-                    currentIndex = (index + totalSlides) % totalSlides;
-                    slides[currentIndex].classList.add('active');
-                    updateDots(currentIndex);
-                }
+                const timerInterval = setInterval(function() {
+                    const now = new Date().getTime();
+                    const distance = countDownDate - now;
 
-                function resetInterval() {
-                    clearInterval(slideInterval);
-                    slideInterval = setInterval(() => {
-                        goToSlide(currentIndex + 1);
-                    }, 2500);
-                }
-                
-                prevBtn.addEventListener('click', () => {
-                    goToSlide(currentIndex - 1);
-                    resetInterval();
-                });
+                    if (distance < 0) {
+                        clearInterval(timerInterval);
+                        countdownContainer.innerHTML = '<p class="text-2xl font-bold text-white">Offer Expired!</p>';
+                        return;
+                    }
 
-                nextBtn.addEventListener('click', () => {
-                    goToSlide(currentIndex + 1);
-                    resetInterval();
-                });
-                
-                // Initialize first slide and start autoplay
-                if (slides.length > 0) {
-                    slides[0].classList.add('active');
-                    updateDots(0);
-                    resetInterval();
-                }
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    daysEl.textContent = String(days).padStart(2, '0');
+                    hoursEl.textContent = String(hours).padStart(2, '0');
+                    minutesEl.textContent = String(minutes).padStart(2, '0');
+                    secondsEl.textContent = String(seconds).padStart(2, '0');
+                }, 1000);
             }
+
+            // --- Creative Studio Slider (Swiper.js) ---
+            const conceptSlider = new Swiper('.concept-slider', {
+                effect: 'slide',
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                loop: true,
+                spaceBetween: 30,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
+
+            // --- Creative Lab Video Slider (Swiper.js) ---
+            const videoSlider = new Swiper('.video-slider', {
+                effect: 'coverflow',
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                coverflowEffect: {
+                    rotate: 50,
+                    stretch: 0,
+                    depth: 100,
+                    modifier: 1,
+                    slideShadows: true,
+                },
+                loop: true,
+                pagination: {
+                    el: '.video-pagination',
+                    clickable: true,
+                },
+            });
         });
     </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
